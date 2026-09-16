@@ -53,7 +53,11 @@ function FinancialPageContent() {
 
       setSalePrice(parsed.salePrice ?? '')
       setLeaseRate(parsed.leaseRate ?? '')
-      setLeaseFrequency(parsed.leaseFrequency ?? 'MONTHLY')
+      setLeaseFrequency(
+        parsed.leaseFrequency ??
+        parsed.leaseRateBasis ??
+        'MONTHLY'
+      )
       setPropertyTaxes(parsed.propertyTaxes ?? '')
       setNoi(parsed.noi ?? '')
       setCapRate(parsed.capRate ?? '')

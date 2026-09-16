@@ -94,17 +94,63 @@ export default function ListingStepOne({
           : 'SALE'
       )
 
-      setCategoryId(
+      let restoredCategoryId =
         typeof draft.categoryId === 'string'
           ? draft.categoryId
           : ''
-      )
 
-      setPropertyTypeId(
+      let restoredPropertyTypeId =
         typeof draft.propertyTypeId === 'string'
           ? draft.propertyTypeId
           : ''
-      )
+
+      /*
+       * AI-assisted drafts may initially contain the
+       * human-readable property type but not database IDs.
+       * Resolve the name against the authoritative taxonomy
+       * already loaded for this page.
+       */
+      if (
+        !restoredPropertyTypeId &&
+        typeof draft.propertyTypeName === 'string'
+      ) {
+        const normalizedName =
+          draft.propertyTypeName.trim().toLowerCase()
+
+        const matchedType = propertyTypes.find(
+          (type) =>
+            type.name.trim().toLowerCase() ===
+            normalizedName
+        )
+
+        if (matchedType) {
+          restoredPropertyTypeId = matchedType.id
+          restoredCategoryId = matchedType.category_id
+        } else {
+          /*
+           * The AI term may describe a broad category rather
+           * than a specific WorldwideCRE property subtype.
+           *
+           * Example:
+           * "Office" is a category containing Medical Office,
+           * Office Building and Office Condo. Do not guess the
+           * subtype; select the category and let the user
+           * choose the correct property type.
+           */
+          const matchedCategory = categories.find(
+            (category) =>
+              category.name.trim().toLowerCase() ===
+              normalizedName
+          )
+
+          if (matchedCategory) {
+            restoredCategoryId = matchedCategory.id
+          }
+        }
+      }
+
+      setCategoryId(restoredCategoryId)
+      setPropertyTypeId(restoredPropertyTypeId)
 
       if (resumeRequested && restoredStep) {
         const routes: Record<number, string> = {
@@ -131,7 +177,12 @@ export default function ListingStepOne({
     return () => {
       cancelled = true
     }
-  }, [resumeRequested, router])
+  }, [
+    resumeRequested,
+    router,
+    categories,
+    propertyTypes,
+  ])
 
   const filteredTypes = useMemo(
     () => propertyTypes.filter((type) => type.category_id === categoryId),

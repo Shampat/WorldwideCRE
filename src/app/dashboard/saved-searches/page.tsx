@@ -85,6 +85,61 @@ function buildSearchUrl(
     : '/listings'
 }
 
+function formatCriteria(criteria: SearchCriteria | null) {
+  if (!criteria) {
+    return ['All commercial properties']
+  }
+
+  const items: string[] = []
+
+  if (criteria.keyword) {
+    items.push(`Keyword: ${criteria.keyword}`)
+  }
+
+  if (criteria.transaction === 'SALE') {
+    items.push('For Sale')
+  } else if (criteria.transaction === 'LEASE') {
+    items.push('For Lease')
+  } else if (criteria.transaction === 'SUBLEASE') {
+    items.push('For Sublease')
+  }
+
+  if (criteria.rateBasis === 'ANNUAL') {
+    items.push('Annual')
+  } else if (criteria.rateBasis === 'MONTHLY') {
+    items.push('Monthly')
+  } else if (criteria.rateBasis === 'SQFT_YEAR') {
+    items.push('Per SF / Year')
+  }
+
+  if (criteria.propertyType) {
+    items.push(criteria.propertyType)
+  }
+
+  if (criteria.city) {
+    items.push(criteria.city)
+  }
+
+  if (criteria.region) {
+    items.push(criteria.region)
+  }
+
+  const min = criteria.minPrice
+  const max = criteria.maxPrice
+
+  if (min && max) {
+    items.push(`$${min}–$${max}`)
+  } else if (min) {
+    items.push(`From $${min}`)
+  } else if (max) {
+    items.push(`Up to $${max}`)
+  }
+
+  return items.length > 0
+    ? items
+    : ['All commercial properties']
+}
+
 function formatDate(value: string) {
   return new Intl.DateTimeFormat('en-CA', {
     year: 'numeric',
@@ -216,7 +271,20 @@ export default async function SavedSearchesPage() {
                         {search.name}
                       </h2>
 
-                      <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-sm text-gray-500">
+                      <div className="mt-3 flex flex-wrap gap-2">
+                        {formatCriteria(criteria).map(
+                          (item, index) => (
+                            <span
+                              key={`${item}-${index}`}
+                              className="rounded-full border border-gray-200 bg-gray-50 px-3 py-1 text-sm font-medium text-gray-700"
+                            >
+                              {item}
+                            </span>
+                          )
+                        )}
+                      </div>
+
+                      <div className="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-sm text-gray-500">
                         <span>
                           Saved{' '}
                           {formatDate(

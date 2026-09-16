@@ -44,6 +44,7 @@ export default async function DashboardPage() {
   let expiringSoonCount = 0
   let savedCount = 0
   let savedSearchCount = 0
+  let unreadNotificationCount = 0
   let hasDraft = false
 
   let listings: {
@@ -70,6 +71,7 @@ export default async function DashboardPage() {
       expiringResult,
       savedResult,
       savedSearchResult,
+      notificationResult,
       listingsResult,
     ] = await Promise.all([
       supabase
@@ -127,6 +129,15 @@ export default async function DashboardPage() {
         .eq('user_id', user.id),
 
       supabase
+        .from('notifications')
+        .select('id', {
+          count: 'exact',
+          head: true,
+        })
+        .eq('user_id', user.id)
+        .is('read_at', null),
+
+      supabase
         .from('listings')
         .select(
           'id, title, status, transaction_type, created_at, expires_at, last_confirmed_at, next_confirmation_at'
@@ -144,6 +155,7 @@ export default async function DashboardPage() {
     expiringSoonCount = expiringResult.count ?? 0
     savedCount = savedResult.count ?? 0
     savedSearchCount = savedSearchResult.count ?? 0
+    unreadNotificationCount = notificationResult.count ?? 0
 
     hasDraft = draftCount > 0
 
@@ -169,6 +181,18 @@ export default async function DashboardPage() {
           </div>
 
           <div className="flex flex-wrap gap-3">
+            <Link
+              href="/dashboard/notifications"
+              className="inline-flex items-center justify-center gap-2 rounded-xl border border-gray-300 bg-white px-5 py-3 font-semibold text-gray-800 hover:bg-gray-50"
+            >
+              Notifications
+              {unreadNotificationCount > 0 && (
+                <span className="rounded-full bg-gray-900 px-2 py-0.5 text-xs font-bold text-white">
+                  {unreadNotificationCount}
+                </span>
+              )}
+            </Link>
+
             <Link
               href="/dashboard/profile"
               className="inline-flex items-center justify-center rounded-xl border border-gray-300 bg-white px-5 py-3 font-semibold text-gray-800 hover:bg-gray-50"

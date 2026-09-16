@@ -81,6 +81,43 @@ export default async function NewListingPage() {
             </div>
 
             <div className="px-8 py-8 sm:px-10 sm:py-10">
+              <div className="mb-8 rounded-2xl border border-teal-200 bg-teal-50/70 p-5">
+                <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <span className="rounded-full bg-teal-700 px-2.5 py-1 text-xs font-bold text-white">
+                        AI
+                      </span>
+
+                      <h2 className="font-semibold text-slate-950">
+                        Start with the AI Listing Assistant
+                      </h2>
+                    </div>
+
+                    <p className="mt-2 max-w-xl text-sm leading-6 text-slate-600">
+                      Describe the property in your own words and let
+                      WorldwideCRE organize the information into a draft
+                      for you to review.
+                    </p>
+                  </div>
+
+                  <Link
+                    href="/dashboard/listings/new/assistant"
+                    className="inline-flex shrink-0 items-center justify-center rounded-xl bg-teal-700 px-5 py-3 text-sm font-semibold text-white transition hover:bg-teal-800"
+                  >
+                    Start with AI →
+                  </Link>
+                </div>
+              </div>
+
+              <div className="mb-8 flex items-center gap-4">
+                <div className="h-px flex-1 bg-slate-200" />
+                <span className="text-xs font-semibold uppercase tracking-wide text-slate-400">
+                  Or enter manually
+                </span>
+                <div className="h-px flex-1 bg-slate-200" />
+              </div>
+
               <ListingStepOne
                 categories={categories ?? []}
                 propertyTypes={propertyTypes ?? []}

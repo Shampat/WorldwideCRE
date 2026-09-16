@@ -48,6 +48,36 @@ export default function ReviewPage() {
       ? draft.leaseRate
       : draft.salePrice
 
+  const leaseFrequency =
+    draft.leaseFrequency ??
+    draft.leaseRateBasis
+
+  const leaseFrequencyLabel =
+    leaseFrequency === 'SQFT_YEAR'
+      ? ' / sq ft / year'
+      : leaseFrequency === 'ANNUAL'
+      ? ' / year'
+      : leaseFrequency === 'MONTHLY'
+      ? ' / month'
+      : ''
+
+  const priceDisplay =
+    price
+      ? `$${Number(price).toLocaleString()} CAD${
+          draft.transactionType === 'LEASE' ||
+          draft.transactionType === 'SUBLEASE'
+            ? leaseFrequencyLabel
+            : ''
+        }`
+      : ''
+
+  const leaseRateDisplay =
+    draft.leaseRate
+      ? `$${Number(
+          draft.leaseRate
+        ).toLocaleString()} CAD${leaseFrequencyLabel}`
+      : ''
+
   const missingItems = [
     !draft.title && {
       label: 'Listing title',
@@ -279,9 +309,9 @@ export default function ReviewPage() {
                   </p>
                 </div>
 
-                {Boolean(price) && (
+                {Boolean(priceDisplay) && (
                   <p className="text-xl font-bold text-slate-950">
-                    ${Number(price).toLocaleString()} CAD
+                    {priceDisplay}
                   </p>
                 )}
               </div>
@@ -318,7 +348,10 @@ export default function ReviewPage() {
               <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3">
                 <Summary label="Transaction" value={transaction} />
                 <Summary label="Sale price" value={draft.salePrice} />
-                <Summary label="Lease rate" value={draft.leaseRate} />
+                <Summary
+                  label="Lease rate"
+                  value={leaseRateDisplay}
+                />
                 <Summary label="Property taxes" value={draft.propertyTaxes} />
                 <Summary label="NOI" value={draft.noi} />
                 <Summary label="Cap rate" value={draft.capRate} />
