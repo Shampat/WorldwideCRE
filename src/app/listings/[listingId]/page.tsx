@@ -460,17 +460,52 @@ export default async function PublicListingPage({
 
                 {representative ? (
                   <div className="mt-4">
-                    <div>
-                      <p className="font-semibold text-gray-950">
-                        {representative.display_name ||
-                          'Listing Representative'}
-                      </p>
-
-                      {representative.title && (
-                        <p className="mt-1 text-sm text-gray-600">
-                          {representative.title}
-                        </p>
+                    <div className="flex items-center gap-4">
+                      {representative.avatar_url ? (
+                        <img
+                          src={representative.avatar_url}
+                          alt={`${representative.display_name || 'Listing Representative'} profile`}
+                          className="h-16 w-16 shrink-0 rounded-full object-cover"
+                        />
+                      ) : (
+                        <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-gray-100 text-xl font-bold text-gray-500">
+                          {representative.display_name
+                            ?.charAt(0)
+                            ?.toUpperCase() || '?'}
+                        </div>
                       )}
+
+                      <div>
+                        {representative.slug ? (
+                          <Link
+                            href={`/agents/${representative.slug}`}
+                            className="font-semibold text-gray-950 hover:underline"
+                          >
+                            {representative.display_name ||
+                              'Listing Representative'}
+                          </Link>
+                        ) : (
+                          <p className="font-semibold text-gray-950">
+                            {representative.display_name ||
+                              'Listing Representative'}
+                          </p>
+                        )}
+
+                        {representative.title && (
+                          <p className="mt-1 text-sm text-gray-600">
+                            {representative.title}
+                          </p>
+                        )}
+
+                        {representative.slug && (
+                          <Link
+                            href={`/agents/${representative.slug}`}
+                            className="mt-2 inline-block text-sm font-semibold text-gray-700 hover:text-gray-950 hover:underline"
+                          >
+                            View Professional Profile →
+                          </Link>
+                        )}
+                      </div>
                     </div>
 
                     <div className="mt-5 grid gap-3">

@@ -6,6 +6,7 @@ import DeleteSavedSearchButton from './delete-saved-search-button'
 type SearchCriteria = {
   keyword?: string
   transaction?: string
+  rateBasis?: string
   propertyType?: string
   region?: string
   city?: string
@@ -31,6 +32,13 @@ function buildSearchUrl(
     params.set(
       'transaction',
       criteria.transaction
+    )
+  }
+
+  if (criteria.rateBasis) {
+    params.set(
+      'rateBasis',
+      criteria.rateBasis
     )
   }
 

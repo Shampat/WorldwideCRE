@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
+import ConfirmAvailabilityButton from './confirm-availability-button'
 
 function formatStatus(status: string) {
   return status
@@ -52,6 +53,8 @@ export default async function DashboardPage() {
     transaction_type: string
     created_at: string
     expires_at: string | null
+    last_confirmed_at: string | null
+    next_confirmation_at: string | null
   }[] = []
 
   if (user) {
@@ -126,7 +129,7 @@ export default async function DashboardPage() {
       supabase
         .from('listings')
         .select(
-          'id, title, status, transaction_type, created_at, expires_at'
+          'id, title, status, transaction_type, created_at, expires_at, last_confirmed_at, next_confirmation_at'
         )
         .eq('created_by', user.id)
         .order('created_at', {
@@ -166,6 +169,20 @@ export default async function DashboardPage() {
           </div>
 
           <div className="flex flex-wrap gap-3">
+            <Link
+              href="/dashboard/profile"
+              className="inline-flex items-center justify-center rounded-xl border border-gray-300 bg-white px-5 py-3 font-semibold text-gray-800 hover:bg-gray-50"
+            >
+              Professional Profile
+            </Link>
+
+            <Link
+              href="/dashboard/listings"
+              className="inline-flex items-center justify-center rounded-xl border border-gray-300 bg-white px-5 py-3 font-semibold text-gray-800 hover:bg-gray-50"
+            >
+              My Listings
+            </Link>
+
             <Link
               href="/dashboard/saved"
               className="inline-flex items-center justify-center rounded-xl border border-gray-300 bg-white px-5 py-3 font-semibold text-gray-800 hover:bg-gray-50"
@@ -288,6 +305,26 @@ export default async function DashboardPage() {
                       <span>
                         Submitted {formatDate(listing.created_at)}
                       </span>
+
+                      {listing.status === 'ACTIVE' &&
+                        listing.last_confirmed_at && (
+                          <span>
+                            Confirmed{' '}
+                            {formatDate(
+                              listing.last_confirmed_at
+                            )}
+                          </span>
+                        )}
+
+                      {listing.status === 'ACTIVE' &&
+                        listing.next_confirmation_at && (
+                          <span>
+                            Confirm again by{' '}
+                            {formatDate(
+                              listing.next_confirmation_at
+                            )}
+                          </span>
+                        )}
                     </div>
                   </div>
 
@@ -302,6 +339,12 @@ export default async function DashboardPage() {
                     >
                       View
                     </Link>
+
+                    {listing.status === 'ACTIVE' && (
+                      <ConfirmAvailabilityButton
+                        listingId={listing.id}
+                      />
+                    )}
 
                     {listing.status === 'DRAFT' && (
                       <Link
