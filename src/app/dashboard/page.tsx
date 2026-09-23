@@ -38,6 +38,14 @@ export default async function DashboardPage() {
     redirect('/auth')
   }
 
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('platform_role')
+    .eq('id', user.id)
+    .maybeSingle()
+
+  const isAdmin = profile?.platform_role === 'ADMIN'
+
   let draftCount = 0
   let activeCount = 0
   let underReviewCount = 0
@@ -181,6 +189,15 @@ export default async function DashboardPage() {
           </div>
 
           <div className="flex flex-wrap gap-3">
+            {isAdmin && (
+              <Link
+                href="/dashboard/admin/review"
+                className="inline-flex items-center justify-center rounded-xl border border-teal-300 bg-teal-50 px-5 py-3 font-semibold text-teal-900 hover:bg-teal-100"
+              >
+                Admin Review
+              </Link>
+            )}
+
             <Link
               href="/dashboard/notifications"
               className="inline-flex items-center justify-center gap-2 rounded-xl border border-gray-300 bg-white px-5 py-3 font-semibold text-gray-800 hover:bg-gray-50"
