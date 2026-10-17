@@ -66,25 +66,37 @@ export default async function HomePage() {
             commercial property representatives.
           </p>
 
-          <div className="mx-auto mt-10 max-w-4xl rounded-2xl bg-white p-3 text-left shadow-2xl">
+          <form
+            action="/listings"
+            method="get"
+            className="mx-auto mt-10 max-w-4xl rounded-2xl bg-white p-3 text-left shadow-2xl"
+          >
             <div className="grid gap-3 md:grid-cols-[1fr_180px_120px]">
               <input
+                name="keyword"
                 type="text"
                 placeholder="Try: 10,000 sq ft warehouse in Mississauga under $4M"
                 className="rounded-xl border border-gray-200 px-4 py-4 text-gray-900 outline-none"
               />
 
-              <select className="rounded-xl border border-gray-200 px-4 py-4 text-gray-900 outline-none">
-                <option>For Sale</option>
-                <option>For Lease</option>
-                <option>For Sublease</option>
+              <select
+                name="transaction"
+                defaultValue="SALE"
+                className="rounded-xl border border-gray-200 px-4 py-4 text-gray-900 outline-none"
+              >
+                <option value="SALE">For Sale</option>
+                <option value="LEASE">For Lease</option>
+                <option value="SUBLEASE">For Sublease</option>
               </select>
 
-              <button className="rounded-xl bg-gray-900 px-5 py-4 font-semibold text-white hover:bg-gray-700">
+              <button
+                type="submit"
+                className="rounded-xl bg-gray-900 px-5 py-4 font-semibold text-white hover:bg-gray-700"
+              >
                 Search
               </button>
             </div>
-          </div>
+          </form>
 
           <p className="mt-5 text-sm text-gray-400">
             AI-powered search • Commercial property only • Worldwide
@@ -124,7 +136,9 @@ export default async function HomePage() {
             </div>
 
             <div className="rounded-2xl border border-gray-200 p-7">
-              <p className="text-sm font-semibold text-gray-500">03</p>
+              <p className="text-sm font-semibold text-gray-500">
+                03
+              </p>
               <h3 className="mt-3 text-xl font-semibold">
                 Contact representatives
               </h3>
